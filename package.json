@@ -1,0 +1,34 @@
+{
+  "name": "car-simulator-example",
+  "version": "1.0.0",
+  "description": "after installing node:\r ```sh\r $ npm install\r $ npm run start\r ```\r then browsing to http://localhost:8080 should show you the results. any changes made to the code will cause a reload.",
+  "main": "none",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server"
+  },
+  "author": "James Peach <jpeach6@bloomberg.net>",
+  "license": "MIT",
+  "dependencies": {
+    "planck-js": "^0.3.13",
+    "three": "^0.116.1",
+    "three-gltf-loader": "^1.111.0",
+    "three-trackballcontrols": "0.0.8",
+    "three-trackballcontrols-ts": "^0.2.1",
+    "ts-loader": "^7.0.4",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/FRUK-Simulator/car-simulator-example.git"
+  },
+  "bugs": {
+    "url": "https://github.com/FRUK-Simulator/car-simulator-example/issues"
+  },
+  "homepage": "https://github.com/FRUK-Simulator/car-simulator-example#readme"
+}

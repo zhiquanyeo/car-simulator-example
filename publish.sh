@@ -1,8 +1,5 @@
 #!/bin/bash
 
-NODE="node.exe"
-NPM='C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js'
-
 set -e
 
 sha=$(git rev-parse HEAD)
@@ -13,7 +10,7 @@ git stash
 git checkout -B gh-pages
 git reset --hard $sha
 
-$NODE "$NPM" run build
+npm run build
 git add dist/bundle.js -f
 git commit -m "GH PAGES BUILD"
 

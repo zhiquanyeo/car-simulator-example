@@ -16,29 +16,30 @@ let sim: TopDownCarSim;
 let control = Control.NONE;
 let steer = Steer.NONE;
 
+let keys = new Set();
+
+function updateKeys() {
+  control = Control.NONE;
+  if (keys.has("w")) { control = Control.FORWARD; }
+  if (keys.has("s")) { control = Control.BRAKE; }
+
+  steer = Steer.NONE;
+  if (keys.has("a")) { steer = Steer.LEFT; }
+  if (keys.has("d")) { steer = Steer.RIGHT; }
+}
+
 window.onkeydown = function (ev: KeyboardEvent) {
-  if (ev.key == "w") {
-    control = Control.FORWARD;
-  } else if (ev.key == "s") {
-    control = Control.BRAKE;
-  }
-  if (ev.key == "a") {
-    steer = Steer.LEFT;
-  } else if (ev.key == "d") {
-    steer = Steer.RIGHT;
-  }
+  keys.add(ev.key);
+  updateKeys();
 }
 
 window.onkeyup = function (ev: KeyboardEvent) {
-  if (ev.key == "w" || ev.key == "s") {
-    control = Control.NONE;
-  }
-  if (ev.key == "a" || ev.key == "d") {
-    steer = Steer.NONE;
-  }
+  keys.delete(ev.key);
+  updateKeys();
 }
 
 window.onload = main;
+window.onresize = onresize;
 
 class MeshUpdater implements SimObject {
   constructor(public mesh: THREE.Mesh) { }
@@ -77,8 +78,8 @@ function main(): void {
 
 function init(config: TopDownCarSpec) {
 
-  let height = Math.min(480, window.innerHeight);
-  let width = Math.min(640, window.innerWidth);
+  let height = window.innerHeight;
+  let width = window.innerWidth;
 
   camera = new THREE.PerspectiveCamera(70, width / height, 0.1, 1000);
   camera.position.z = 20;
@@ -166,4 +167,12 @@ function animate(time: number) {
   controls.update();
 
   renderer.render(scene, camera);
+}
+
+function onresize(windowEvent: UIEvent) {
+  let height = window.innerHeight;
+  let width = window.innerWidth;
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(width, height);
 }

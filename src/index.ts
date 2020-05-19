@@ -2,13 +2,15 @@ import * as THREE from 'three';
 import { TrackballControls } from 'three-trackballcontrols-ts';
 import { TopDownCarSim } from './topdowncar';
 import { Control, Steer, SimObject, TopDownCarSpec, ObjectSpec } from './carinterface';
+import { GUI } from 'dat.gui';
 
 let camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.Renderer, controls: TrackballControls;
-let geometry: THREE.BoxGeometry, material: THREE.Material, wheelMaterial: THREE.Material;
+let geometry: THREE.BoxGeometry, material: THREE.Material, wheelMaterial: THREE.Material, wallMaterial: THREE.Material;
 
 let meshes = {
   car: new THREE.Mesh(),
-  wheels: [new THREE.Mesh(), new THREE.Mesh(), new THREE.Mesh(), new THREE.Mesh()]
+  wheels: [new THREE.Mesh(), new THREE.Mesh(), new THREE.Mesh(), new THREE.Mesh()],
+  walls: new Array<THREE.Mesh>()
 }
 
 let sim: TopDownCarSim;
@@ -17,6 +19,8 @@ let control = Control.NONE;
 let steer = Steer.NONE;
 
 let keys = new Set();
+
+let options = { thirdPersonCamera: false };
 
 function updateKeys() {
   control = Control.NONE;
@@ -109,8 +113,8 @@ function init(config: TopDownCarSpec) {
   geometry = new THREE.BoxGeometry(1.0, 1.0, 1.0);
 
   material = new THREE.MeshStandardMaterial({ color: 0x888888 });
-
   wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x222266 });
+  wallMaterial = new THREE.MeshStandardMaterial({ color: 0x226622 });
 
   let setTransform = (config: ObjectSpec, mesh: THREE.Mesh): void => {
     mesh.scale.x = config.width;
@@ -142,6 +146,14 @@ function init(config: TopDownCarSpec) {
     scene.add(wheelMesh);
   }
 
+  for (let i = 0; i < config.walls.length; i++) {
+    let wall = new THREE.Mesh(geometry, wallMaterial);
+    setTransform(config.walls[i], wall);
+    wall.scale.y = 1;
+    scene.add(wall);
+  }
+
+
   let rendererParams: THREE.WebGLRendererParameters = { antialias: true };
   renderer = new THREE.WebGLRenderer(rendererParams);
   renderer.setSize(width, height);
@@ -150,6 +162,10 @@ function init(config: TopDownCarSpec) {
   document.body.appendChild(renderer.domElement);
 
   controls = new TrackballControls(camera, renderer.domElement);
+
+  let gui = new GUI();
+
+  gui.add(options, 'thirdPersonCamera');
 }
 
 let lastTime = undefined;
@@ -164,7 +180,18 @@ function animate(time: number) {
   sim.setSteer(steer);
   sim.update(d);
 
-  controls.update();
+  if (options.thirdPersonCamera) {
+    camera.position.x = meshes.car.position.x + Math.sin(meshes.car.rotation.y) * 10;
+    camera.position.y = 5;
+    camera.position.z = meshes.car.position.z + Math.cos(meshes.car.rotation.y) * 10;
+
+    camera.rotation.x = 0;
+    camera.rotation.y = meshes.car.rotation.y;
+    camera.rotation.z = 0;
+  } else {
+    controls.update();
+  }
+
 
   renderer.render(scene, camera);
 }

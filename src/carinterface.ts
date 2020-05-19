@@ -31,6 +31,7 @@ export class WheelObjectSpec extends ObjectSpec {
 export class TopDownCarSpec {
     body: ObjectSpec;
     wheels: WheelObjectSpec[];
+    walls: ObjectSpec[];
 
     constructor(carObject: SimObject, wheelObjects: SimObject[]) {
         this.body = new ObjectSpec({ x: 0, y: 0 }, 0, 4, 2);
@@ -54,5 +55,11 @@ export class TopDownCarSpec {
         this.wheels[1].object = wheelObjects[1];
         this.wheels[2].object = wheelObjects[2];
         this.wheels[3].object = wheelObjects[3];
+
+        this.walls = new Array();
+        this.walls.push(new ObjectSpec({ x: 0, y: 50 }, 0, 0.5, 100));
+        this.walls.push(new ObjectSpec({ x: 0, y: -50 }, 0, 0.5, 100));
+        this.walls.push(new ObjectSpec({ x: 50, y: 0 }, 0, 100, 0.5));
+        this.walls.push(new ObjectSpec({ x: -50, y: 0 }, 0, 100, 0.5));
     }
 }

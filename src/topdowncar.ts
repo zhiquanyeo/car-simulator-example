@@ -1,6 +1,24 @@
 import { Vec2, Body, World, Box, RevoluteJoint, PrismaticJoint } from 'planck-js';
 import { WheelObjectSpec, Steer, Control, ObjectSpec, TopDownCarSpec, SimObject } from './carinterface';
 
+class SimWall {
+    body: Body;
+
+    constructor(spec: ObjectSpec, world: World) {
+        this.body = world.createBody({
+            position: new Vec2(spec.position),
+            type: 'static',
+            angle: spec.angle
+        });
+
+        this.body.createFixture({
+            shape: new Box(spec.width / 2, spec.height / 2),
+            density: 1,
+            isSensor: false
+        });
+    }
+}
+
 class SimWheel {
     pos: Vec2;
     steering: boolean;
@@ -67,7 +85,7 @@ class SimCar {
 
     max_wheel_angle: number;
     wheel_angle: number;
-    
+
     steer: Steer;
     control: Control;
 
@@ -86,7 +104,7 @@ class SimCar {
             density: 1, isSensor: false, friction: 0.3, restitution: 0.4
         });
 
-        this.wheels = wheelSpecs.map(spec=>new SimWheel(spec, this.body, world));
+        this.wheels = wheelSpecs.map(spec => new SimWheel(spec, this.body, world));
 
         this.steer = Steer.NONE;
         this.max_wheel_angle = 0.35;
@@ -126,15 +144,16 @@ class SimCar {
     }
 }
 
-
 export class TopDownCarSim {
     world: World;
     car: SimCar;
+    walls: SimWall[];
 
     constructor(spec: TopDownCarSpec) {
         let gravity = new Vec2(0, 0);
         this.world = new World(gravity);
         this.car = new SimCar(spec.body, spec.wheels, this.world);
+        this.walls = spec.walls.map(wall => new SimWall(wall, this.world));
     }
 
     updateBody(body: Body) {

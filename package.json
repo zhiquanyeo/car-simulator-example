@@ -5,7 +5,8 @@
   "main": "none",
   "scripts": {
     "build": "webpack",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "test":"webpack"
   },
   "author": "James Peach <jpeach6@bloomberg.net>",
   "license": "MIT",

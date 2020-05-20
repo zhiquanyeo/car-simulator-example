@@ -1,4 +1,6 @@
-# car example with 2d physics ![build status](https://travis-ci.com/FRUK-Simulator/car-simulator-example.svg?branch=master)
+# car example with 2d physics
+
+[![CI](https://github.com/FRUK-Simulator/car-simulator-example/workflows/CI/badge.svg)](https://github.com/FRUK-Simulator/car-simulator-example/actions?query=workflow%3ACI+branch%3Amaster)
 
 # setup
 after installing node:

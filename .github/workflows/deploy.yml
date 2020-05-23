@@ -24,5 +24,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v2.3.1
         env:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: dist
+          PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: html

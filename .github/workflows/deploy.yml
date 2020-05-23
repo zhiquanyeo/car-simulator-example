@@ -15,11 +15,14 @@ jobs:
         run: |
           npm install
           npm run build
-          rm .gitignore -f
+          mkdir html
+          cp index.html style.css html/
+          mkdir html/dist
+          cp dist/bundle.js html/dist/bundle.js
 
       - name: Deploy 🚀
         uses: peaceiris/actions-gh-pages@v2.3.1
         env:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: dist
-          PUBLISH_DIR: .
+          PUBLISH_DIR: html

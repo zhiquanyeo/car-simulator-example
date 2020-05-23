@@ -1,6 +1,9 @@
 name: Build and Deploy
 
-on: [push]
+on: 
+  push:
+    branches: 
+      - master
 
 jobs:
   build-and-deploy:
@@ -15,11 +18,14 @@ jobs:
         run: |
           npm install
           npm run build
-          rm .gitignore -f
-          ls
+          mkdir html
+          cp index.html style.css html/
+          mkdir html/dist
+          cp dist/bundle.js html/dist/bundle.js
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v3
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
+        uses: peaceiris/actions-gh-pages@v2.3.1
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: html

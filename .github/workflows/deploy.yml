@@ -18,14 +18,10 @@ jobs:
         run: |
           npm install
           npm run build
-          mkdir html
-          cp index.html style.css html/
-          mkdir html/dist
-          cp dist/bundle.js html/dist/bundle.js
+          mkdir public
+          cp -r index.html style.css dist/ public/
 
       - name: Deploy 🚀
-        uses: peaceiris/actions-gh-pages@v2.3.1
-        env:
-          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: html
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

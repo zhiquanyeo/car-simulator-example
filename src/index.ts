@@ -3,6 +3,12 @@ import { TrackballControls } from 'three-trackballcontrols-ts';
 import { TopDownCarSim } from './topdowncar';
 import { Control, Steer, SimObject, TopDownCarSpec, ObjectSpec } from './carinterface';
 import { GUI } from 'dat.gui';
+import io from "socket.io-client"
+
+interface DriveCommand {
+  steer: "none" | "left" | "right";
+  drive: "none" | "forward" | "brake"
+};
 
 let camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.Renderer, controls: TrackballControls;
 let geometry: THREE.BoxGeometry, material: THREE.Material, wheelMaterial: THREE.Material, wallMaterial: THREE.Material;
@@ -31,6 +37,43 @@ function updateKeys() {
   if (keys.has("a")) { steer = Steer.LEFT; }
   if (keys.has("d")) { steer = Steer.RIGHT; }
 }
+
+// socket io stuff
+const socket = io();
+
+socket.on("disconnect", () => {
+  console.log("Lost connection to server");
+  control = Control.NONE;
+  steer = Steer.NONE;
+});
+
+socket.on("server-message", function(msg) {
+  console.log(msg);
+});
+
+socket.on("drive-cmd", (cmd: DriveCommand) => {
+  console.log("DriveCmd: ", cmd);
+  if (cmd.drive === "none") {
+    control = Control.NONE;
+  }
+  else if (cmd.drive === "forward") {
+    control = Control.FORWARD;
+  }
+  else {
+    control = Control.BRAKE;
+  }
+
+
+  if (cmd.steer === "none") {
+    steer = Steer.NONE;
+  }
+  else if (cmd.steer === "left") {
+    steer = Steer.LEFT;
+  }
+  else {
+    steer = Steer.RIGHT;
+  }
+});
 
 window.onkeydown = function (ev: KeyboardEvent) {
   keys.add(ev.key);
@@ -203,3 +246,4 @@ function onresize(windowEvent: UIEvent) {
   camera.updateProjectionMatrix();
   renderer.setSize(width, height);
 }
+

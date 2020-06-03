@@ -89,6 +89,10 @@ class SimCar {
     steer: Steer;
     control: Control;
 
+    // Experimental
+    leftSpeed: number;
+    rightSpeed: number;
+
     constructor(spec: ObjectSpec, wheelSpecs: WheelObjectSpec[], world: World) {
         this.body = world.createBody({
             type: 'dynamic',
@@ -113,34 +117,56 @@ class SimCar {
     }
 
     update(ms: number): void {
-        let incr = this.max_wheel_angle * ms * 6;
+        // Experimental
+        // wheels 0 and 2 are left
+        // wheels 1 and 3 are right
+        const leftForceMag = this.leftSpeed * 40;
+        const rightForceMag = this.rightSpeed * 40;
 
-        if (this.steer == Steer.RIGHT) {
-            this.wheel_angle = Math.min(Math.max(this.wheel_angle, 0) + incr, this.max_wheel_angle)
-        } else if (this.steer == Steer.LEFT) {
-            this.wheel_angle = Math.max(Math.min(this.wheel_angle, 0) - incr, -this.max_wheel_angle)
-        } else {
-            this.wheel_angle = 0;
-        }
-
-        let forceMag = 0;
-        if (this.control == Control.FORWARD) {
-            forceMag = -40;
-        } else if (this.control == Control.BRAKE) {
-            forceMag = 35;
-        }
-
-        for (let wheel of this.wheels) {
+        for (let i = 0; i < this.wheels.length; i++) {
+            const wheel = this.wheels[i];
             wheel.killSidewaysVelocity();
-            if (wheel.steering) {
-                wheel.setAngle(this.wheel_angle);
+
+            let force = wheel.body.getWorldVector(new Vec2(0, 1));
+
+            if (i % 2 === 0) {
+                force.mul(leftForceMag);
             }
-            if (wheel.powered) {
-                let force = wheel.body.getWorldVector(new Vec2(0, 1));
-                force.mul(forceMag);
-                wheel.body.applyForce(force, wheel.body.getWorldCenter());
+            else {
+                force.mul(rightForceMag);
             }
+
+            wheel.body.applyForce(force, wheel.body.getWorldCenter());
         }
+
+        // let incr = this.max_wheel_angle * ms * 6;
+
+        // if (this.steer == Steer.RIGHT) {
+        //     this.wheel_angle = Math.min(Math.max(this.wheel_angle, 0) + incr, this.max_wheel_angle)
+        // } else if (this.steer == Steer.LEFT) {
+        //     this.wheel_angle = Math.max(Math.min(this.wheel_angle, 0) - incr, -this.max_wheel_angle)
+        // } else {
+        //     this.wheel_angle = 0;
+        // }
+
+        // let forceMag = 0;
+        // if (this.control == Control.FORWARD) {
+        //     forceMag = -40;
+        // } else if (this.control == Control.BRAKE) {
+        //     forceMag = 35;
+        // }
+
+        // for (let wheel of this.wheels) {
+        //     wheel.killSidewaysVelocity();
+        //     if (wheel.steering) {
+        //         wheel.setAngle(this.wheel_angle);
+        //     }
+        //     if (wheel.powered) {
+        //         let force = wheel.body.getWorldVector(new Vec2(0, 1));
+        //         force.mul(forceMag);
+        //         wheel.body.applyForce(force, wheel.body.getWorldCenter());
+        //     }
+        // }
     }
 }
 
@@ -168,6 +194,15 @@ export class TopDownCarSim {
     setControl(control: Control) { this.car.control = control; }
 
     setSteer(steer: Steer) { this.car.steer = steer; }
+
+    setPwm(channel: number, value: number) {
+        if (channel === 0) {
+            this.car.leftSpeed = value;
+        }
+        else if (channel === 1) {
+            this.car.rightSpeed = value;
+        }
+    }
 
     update(ms: number) {
         this.car.update(ms);

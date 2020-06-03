@@ -47,6 +47,7 @@ const backConfig = {
     output: {
         filename: 'server.js',
         path: path.resolve(__dirname, 'dist'),
+        libraryTarget: "commonjs"
     },
     resolve: {
         extensions: [".ts", ".js"]

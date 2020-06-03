@@ -12,6 +12,7 @@
   "author": "James Peach <jpeach6@bloomberg.net>",
   "license": "MIT",
   "dependencies": {
+    "@bbfrc/drivethru": "^1.2.0",
     "@types/dat.gui": "^0.7.5",
     "dat.gui": "^0.7.7",
     "express": "^4.17.1",

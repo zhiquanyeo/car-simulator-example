@@ -10,6 +10,11 @@ interface DriveCommand {
   drive: "none" | "forward" | "brake"
 };
 
+interface PwmCommand {
+  port: number;
+  value: number;
+}
+
 let camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.Renderer, controls: TrackballControls;
 let geometry: THREE.BoxGeometry, material: THREE.Material, wheelMaterial: THREE.Material, wallMaterial: THREE.Material;
 
@@ -72,6 +77,17 @@ socket.on("drive-cmd", (cmd: DriveCommand) => {
   }
   else {
     steer = Steer.RIGHT;
+  }
+});
+
+let leftPwmValue: number = 0;
+let rightPwmValue: number = 0;
+socket.on("pwm", (pwm: PwmCommand) => {
+  if (pwm.port === 0) {
+    leftPwmValue = pwm.value;
+  }
+  else if (pwm.port === 1) {
+    rightPwmValue = pwm.value;
   }
 });
 
@@ -219,8 +235,10 @@ function animate(time: number) {
 
   requestAnimationFrame(animate);
 
-  sim.setControl(control);
-  sim.setSteer(steer);
+  sim.setPwm(0, leftPwmValue);
+  sim.setPwm(1, rightPwmValue);
+  // sim.setControl(control);
+  // sim.setSteer(steer);
   sim.update(d);
 
   if (options.thirdPersonCamera) {

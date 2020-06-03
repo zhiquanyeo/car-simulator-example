@@ -46,9 +46,9 @@ export class TopDownCarSpec {
         this.wheels.push(new WheelObjectSpec({ x: 1, y: 1.2 }, 0, 0.8, 0.4));
 
         this.wheels[0].powered = this.wheels[1].powered = true;
-        this.wheels[2].powered = this.wheels[3].powered = false;
+        this.wheels[2].powered = this.wheels[3].powered = true;
 
-        this.wheels[0].steering = this.wheels[1].steering = true;
+        this.wheels[0].steering = this.wheels[1].steering = false;
         this.wheels[2].steering = this.wheels[3].steering = false;
 
         this.wheels[0].object = wheelObjects[0];

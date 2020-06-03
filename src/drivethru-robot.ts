@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { RobotControllerBase, PinMode, IPortInformation } from "@bbfrc/drivethru";
 
 export class DrivethruRobotController extends RobotControllerBase {
@@ -63,3 +64,10 @@ export class DrivethruRobotController extends RobotControllerBase {
 
 
 }
+=======
+import { RobotControllerBase } from "@bbfrc/drivethru";
+
+export class DrivethruRobotController extends RobotControllerBase {
+
+}
+>>>>>>> 12d1d37614e4e7c9d32d8837f762f481810ebab4
